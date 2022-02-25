@@ -45,41 +45,60 @@ output.path <- check_proj_struct(proj.path,  # Project path
 inDir <- check_proj_struct(data.path,  # Data path
                            "/Clean/Input")  # Sub-directory
 
+
+# Location of FastTree installation
 local.symlinks <- "/Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Bioinformatics_files/Symlinks"
 
 # -------------------------------------------------------------------------
 
 
-
+# Contains Sample and Barcode columns
 file.ids.file <- "sample_file_IDs.xlsx"
+
+# Contains metadata information, sample, treatments, etc.
 metadata.file <- "metadata.csv"
+
+# Needs to match sample column in metadata
 smpl.col <- "Sample"  # not sure why this needs to be here, since repeated below
 
+# Read in file IDs xlsx ("Sample", "Barcode")
 file.ids.dt <- read_excel(file.path(inDir, file.ids.file)) %>%
   as.data.table()
-names(file.ids.dt)[1] <- "Fish.ID"
-file.ids.dt[, Sample := ""]
+names(file.ids.dt)[1] <- "Sample"
+# file.ids.dt[, Sample := ""]  # What does this do?
 
+
+# Read in metadata file
 sample.dt <- read.csv(file.path(inDir, metadata.file)) %>%
   as.data.table() #%>%
   #subset(Dissect_result != "no gut")
-names(sample.dt)[which(names(sample.dt) == "Sample")] <- "Fish.ID"
-# sample.dt[, Sample := ""]
-combined.dt <- sample.dt[file.ids.dt, on = "Fish.ID"]
 
-dupes <- table(combined.dt$Fish.ID) %>% subset(. > 1) %>% names()
-matched.dupes <- data.table(Dupe = dupes, Matches = 0) %>% setkey(Dupe)
+# Rename sample name column
+# names(sample.dt)[which(names(sample.dt) == "Sample")] <- "Sample" # If col name is not sample, this rename it
+# sample.dt[, Sample := ""]  # Not sure what this does
+
+## Combine data tables (Can skip this section if metadata has barcode column)
+# Combines barcode file with metadata if not already combined, aka metada doesn't have barcode column
+# combined.dt <- sample.dt[file.ids.dt, on = "Sample"]
+
+# Checks for duplicates
+dupes <- table(combined.dt$Sample) %>% subset(. > 1) %>% names()  # if no duplicates it will say "error"
+matched.dupes <- data.table(Dupe = dupes, Matches = 0) %>% setkey(Dupe)  # Matches duplicates if there are some, skip if you didn't have any in previous line
+
 
 for (i in 1:nrow(combined.dt)) {
-  if (combined.dt$Fish.ID[i] %in% dupes) {
-    matched.dupes[combined.dt$Fish.ID[i]]$Matches %+=% 1
-    combined.dt$Sample[i] <- paste0(combined.dt$Fish.ID[i], "_", matched.dupes[combined.dt$Fish.ID[i]]$Matches)
+  if (combined.dt$Sample[i] %in% dupes) {
+    matched.dupes[combined.dt$Sample[i]]$Matches %+=% 1
+    combined.dt$Sample[i] <- paste0(combined.dt$Sample[i], "_", matched.dupes[combined.dt$Sample[i]]$Matches)
   } else {
-    combined.dt$Sample[i] <- combined.dt$Fish.ID[i]
+    combined.dt$Sample[i] <- combined.dt$Sample[i]
   }
 }
 table(combined.dt$Sample) %>% subset(. > 1) %>% names()
-saveRDS(combined.dt, file = file.path(inDir, "metadata_withFileIDs.rds"))
+
+# Save RDS obj with file ids
+# saveRDS(combined.dt, file = file.path(inDir, "metadata_withFileIDs.rds"))
+saveRDS(sample.dt, file = file.path(inDir, "metadata_withFileIDs.rds"))  # Export RDS obj
 
 
 
@@ -89,7 +108,7 @@ saveRDS(combined.dt, file = file.path(inDir, "metadata_withFileIDs.rds"))
 
 ###### Definitely assign/change these variables ######
 raw.seq.dirs <- c(
-  Run1 = "/Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/ZF_Interstrain/Data/Raw/Sequences_Raw"
+  Run1 = paste0(data.path, "/Raw/FastQs") #"/Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/ZF_Interstrain/Data/Raw/Sequences_Raw"  # Change to your directory
   # Run2 = "/nfs2/hts/miseq/210614_M01498_0803_000000000-JR55H/L1"
 )
 sample.ids.filename <-  "metadata_withFileIDs.rds" # for properly grabbing sequence files
@@ -108,7 +127,7 @@ split <- "--"
 # inDir <- "Input" # Repeated from above
 smpl.col <- "Sample" # Repeated from above
 
-sample.ids.dt <- read.file(file.path(inDir, sample.ids.filename))
+sample.ids.dt <- dada2.pipeline::read.file(file.path(inDir, sample.ids.filename))
 if (!("data.table" %in% sample.ids.dt)) {
   sample.ids.dt <- as.data.table(sample.ids.dt) %>%
     setkeyv(smpl.col)
@@ -169,7 +188,8 @@ dada2.finish_local(
   paired = TRUE,
   maxCores = cores,
   build.tree = TRUE,
-  fasttree.path = fasttree.path
+  fasttree.path = fasttree.path,
+  user.output.path = output.path
 )
 
 ###### Move files to proper directories ######

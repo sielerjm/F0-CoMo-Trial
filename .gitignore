@@ -1,3 +1,9 @@
+# Large Files
+/Data/Raw/
+/Data/Clean/Sequences
+Sequences_Raw.zip
+/Data/Clean/Input/FastQs
+
 # History files
 .Rhistory
 .Rapp.history

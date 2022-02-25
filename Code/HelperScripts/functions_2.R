@@ -4117,6 +4117,95 @@ dada2.finish_local <- function(
     my.cat("\tDONE and DONE")
 }
 
+
+# KEATON Qualplots --------------------------------------------------------
+
+# dada2.upto.qualPlots <- function(
+  # test.fastq.path,
+  # file.split.pattern = "--",
+  # maxCores = 4,
+  # random.seed = 33,
+  # user.output.path = NULL,
+  # force = FALSE
+# ) 
+  {
+  print(head(list.files(fastq.path), 20))
+  proceed <- readline(
+    prompt = "Above are the first 20 (or fewer) files in the provided path, do you want to proceed? [y/n]: "
+  )
+  while (!(proceed %in% c("y", "n"))) {
+    proceed <- readline(prompt="Please answer y or n: ")
+  }
+  if (proceed == "n") {
+    my.cat("Terminated")
+  } else {
+    theme_set(theme_cowplot())
+    if (is.null(user.output.path)) {
+      output <- run.env$output.path
+    } else {
+      output <- output.path
+    }
+    run.env$fnFs <- list.files(
+      fastq.path,
+      pattern = paste0(file.split.pattern, "R1"),
+      full.names = TRUE
+    ) %>% sort()
+    run.env$fnRs <- list.files(
+      fastq.path,
+      pattern = paste0(file.split.pattern, "R2"),
+      full.names = TRUE
+    ) %>% sort()
+    run.env$sample.names <- strsplit(
+      basename(run.env$fnFs),
+      file.split.pattern
+    ) %>% sapply(`[`, 1)
+    if (length(run.env$sample.names) > 20) {
+      set.seed(random.seed)
+      plot.samples <- sort(sample(run.env$sample.names, 20, replace = F))
+      plot.fnFs <- run.env$fnFs[
+        str_detect(run.env$fnFs, paste(plot.samples, collapse = "|"))
+      ]
+      plot.fnRs <- run.env$fnRs[
+        str_detect(run.env$fnRs, paste(plot.samples, collapse = "|"))
+      ]
+      plot.fnFs.file <- "fwdReads_subset20_qualPlot.pdf"
+      plot.fnRs.file <- "revReads_subset20_qualPlot.pdf"
+    } else {
+      plot.fnFs <- run.env$fnFs
+      plot.fnRs <- run.env$fnRs
+      plot.fnFs.file <- "fwdReads_qualPlot.pdf"
+      plot.fnRs.file <- "revReads_qualPlot.pdf"
+    }
+    
+    plot.files <- c(file.path(output, plot.fnFs.file), file.path(output, plot.fnRs.file))
+    if (all(file.exists(plot.files))) {
+      my.cat("Quality plots already exist, skipping...")
+    } else {
+      my.cat("Making quality plots...")
+      fnFs.qualPlot0 <- plotQualityProfile(plot.fnFs)
+      fnFs.qualPlot <- fnFs.qualPlot0 +
+        scale_x_continuous(breaks = seq(0, 300, 25)) +
+        background_grid(major = "x", minor = "x") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+      ggsave(
+        fnFs.qualPlot,
+        file = plot.files[1]
+      )
+      
+      fnRs.qualPlot0 <- plotQualityProfile(plot.fnRs)
+      fnRs.qualPlot <- fnRs.qualPlot0 +
+        scale_x_continuous(breaks = seq(0, 300, 25)) +
+        background_grid(major = "x", minor = "x") +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+      ggsave(
+        fnRs.qualPlot,
+        file = plot.files[2]
+      )
+    }
+    my.cat("\tDONE")
+  }
+}
+
 # Load RData -----------------------------------------------------------
 #   Description: 
 #   Input: filename for .RData file
