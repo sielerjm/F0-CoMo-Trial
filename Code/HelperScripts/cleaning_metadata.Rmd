@@ -1,0 +1,59 @@
+---
+title: 'Cleaning: Metadata'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(data.table)
+library(magrittr)
+library(roperators)
+library(readr)
+```
+
+
+```{r raw-data-directory}
+data.path
+metadata.path <- paste0(data.path, "/Clean/Metadata")
+head(list.files(metadata.path))
+```
+
+
+```{r clean-sample-list-subset}
+
+# Check that paths are correct
+# list.files(paste0(data.path,"/Clean")) # TEST
+
+# Import original metadata file containing all fish
+# metadata <- read_csv(paste0(data.path, "/Clean/Metadata/BaPStudyData.csv"))
+
+
+
+# Trim metadata
+metadata <- metadata[1:72,]
+
+# Rename column "sample names" to "sample"
+names(metadata)[1] <- "Sample"
+
+
+# Remove controls from sequence list if they exist
+metadata <- metadata %>% 
+    filter(!grepl("Blank", Sample) | !grepl("Kit", Sample))
+
+
+# Check that it looks okay
+View(metadata)
+
+```
+
+```{r export-metadata}
+
+# Save RDS object
+saveRDS(metadata, file = file.path(paste0(metadata.path, "/metadata.rds")))
+
+# Save CSV object
+write.csv(metadata,file = file.path(paste0(metadata.path, "/metadata.csv")), row.names = FALSE)
+```
+
