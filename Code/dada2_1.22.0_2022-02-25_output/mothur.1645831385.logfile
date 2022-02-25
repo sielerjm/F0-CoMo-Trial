@@ -1,0 +1,67 @@
+Mac version
+
+Using ReadLine,Boost,HDF5,GSL
+mothur v.1.46.1
+Last updated: 9/1/21
+by
+Patrick D. Schloss
+
+Department of Microbiology & Immunology
+
+University of Michigan
+http://www.mothur.org
+
+When using, please cite:
+Schloss, P.D., et al., Introducing mothur: Open-source, platform-independent, community-supported software for describing and comparing microbial communities. Appl Environ Microbiol, 2009. 75(23):7537-41.
+
+Distributed under the GNU General Public License
+
+Type 'help()' for information on the commands that are available
+
+For questions and analysis support, please visit our forum at https://forum.mothur.org
+
+Type 'quit()' to exit program
+
+[NOTE]: Setting random seed to 19760620.
+
+Script Mode
+
+
+mothur > align.seqs( fasta=/Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Code/../Output/asv_and_guide_seqs.fasta, reference=template.align, flip=t, keepdots=t, processors=9, outputdir=/Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Code/../Output/ )
+Setting output directory to: /Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Output/
+[WARNING]: keepdots is not a valid parameter, ignoring.
+The valid parameters are: reference, fasta, search, ksize, match, align, mismatch, gapopen, gapextend, processors, flip, threshold, seed, inputdir, and outputdir.
+Unable to open /Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Output/asv_and_guide_seqs.fasta. Trying output directory /Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Output/asv_and_guide_seqs.fasta.
+Unable to open /Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Output/asv_and_guide_seqs.fasta. Trying mothur's executable location asv_and_guide_seqs.fasta.
+Unable to open asv_and_guide_seqs.fasta. Trying mothur's tools location asv_and_guide_seqs.fasta.
+Unable to open asv_and_guide_seqs.fasta.
+Unable to open /Users/michaelsieler/Dropbox/Mac (2)/Documents/Sharpton_Lab/Projects_Repository/Ebony/F0-CoMo-Trial/Code/../Output/asv_and_guide_seqs.fasta
+
+Using 9 processors.
+[ERROR]: did not complete align.seqs.
+
+mothur > quit()
+
+
+It took 0 seconds to run 2 commands from your script.
+
+Logfile : mothur.1645831385.logfile
+
+
+
+************************************************************
+************************************************************
+************************************************************
+Detected 1 [ERROR] messages, please review.
+************************************************************
+************************************************************
+************************************************************
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Detected 1 [WARNING] messages, please review.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<^>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -3697,7 +3697,7 @@ symlink_fastqs_local <- function(
     }
 }
 
-# KEATON -----------------------------------------------------------
+# KEATON  dada2.finish_local-----------------------------------------------------------
 #   Description: 
 #   Input: 
 #   Output: 
@@ -4033,6 +4033,8 @@ dada2.finish_local <- function(
         sample_data(smpl.df),
         tax_table(taxa)
     )
+    
+    saveRDS(ps0, file = file.path(output, "phyloseq-NoPhyTree.rds"))
     
     ps1 <- numbered.ASVs(
         ps = ps0,

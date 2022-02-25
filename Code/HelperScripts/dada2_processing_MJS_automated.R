@@ -188,8 +188,8 @@ dada2.finish_local(
   paired = TRUE,
   maxCores = cores,
   build.tree = TRUE,
-  fasttree.path = fasttree.path,
-  user.output.path = output.path
+  fasttree.path = fasttree.path
+  # user.output.path = output.path
 )
 
 ###### Move files to proper directories ######
